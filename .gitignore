@@ -1,0 +1,8 @@
+gmp
+mpfr
+mpc
+gcc
+binutils
+host
+cross
+downloads
