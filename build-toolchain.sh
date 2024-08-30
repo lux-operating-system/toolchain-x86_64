@@ -76,6 +76,7 @@ cd libstdc++-v3
 autoconf
 cd ..
 sed -i -e '/\*-\*-darwin\*)/r ../../gcc-config/config.host.add' libgcc/config.host
+sed -i -e '/aarch64\*-\*-freebsd\*)/r ../../gcc-config/config.host.add' libgcc/config.host
 sed -i -e '/case $machine in/r ../../gcc-config/mkfixinc.sh.add' fixincludes/mkfixinc.sh
 cd ../build
 ../gcc-14.2.0/configure --target="$TARGET" --prefix="$CROSS" --disable-nls --enable-languages=c,c++ --without-headers --with-gmp-include="$HOST/include" --with-gmp-lib="$HOST/lib"
@@ -87,7 +88,7 @@ make install-target-libgcc
 cd ../..
 
 echo "Cleaning up..."
-rm -rf downloads gmp mpfr mpc binutils gcc
+#rm -rf downloads gmp mpfr mpc binutils gcc
 
 echo
 echo "gcc and binutils are now installed in $CROSS/bin"
