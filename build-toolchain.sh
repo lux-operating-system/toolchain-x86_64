@@ -2,8 +2,8 @@
 
 export HOST="$(pwd)/host"
 export CROSS="$(pwd)/cross"
-export TARGET="x86_64-elf"
-export PATH="$PREFIX/bin:$PATH"
+export TARGET="x86_64-lux"
+export PATH="$CROSS/bin:$PATH"
 
 echo "Attempting to build a toolchain targeting $TARGET into $CROSS..."
 
@@ -48,17 +48,46 @@ make install
 
 echo "Building binutils..."
 cd ../../binutils/binutils-2.43
+sed -i -e 's/haiku/lux/g' config.sub
+sed -i -e 's/haiku/lux/g' bfd/config.bfd
+sed -i -e 's/haiku/lux/g' gas/configure.tgt
+sed -i -e 's/em=lux/ /g' gas/configure.tgt
+sed -i -e 's/haiku/lux/g' ld/configure.tgt
+sed -i -e 's/targ_extra_emuls="elf_x86_64 elf_i386_lux"/targ_extra_emuls="elf_x86_64 elf_i386_lux elf_i386"/g' ld/configure.tgt
+cp ../../emulparams/* ld/emulparams/
+sed -i -e 's/haiku/lux/g' ld/Makefile.am
+cd ld
+mkdir ldscripts
+mkdir tmpdir
+automake
+cd ..
 ./configure --target="$TARGET" --prefix="$CROSS" --with-sysroot --disable-nls --disable-werror
 make
 make install
 
 echo "Building gcc..."
-cd ../../gcc/build
+cd ../../gcc/gcc-14.2.0
+sed -i -e 's/haiku/lux/g' config.sub
+sed -i -e '/tmake_file="t-darwin "/r ../../gcc-config/config.gcc.add1' gcc/config.gcc
+sed -i -e '/tm_file="${tm_file} elfos.h newlib-stdint.h"/r ../../gcc-config/config.gcc.add2' gcc/config.gcc
+cp ../../gcc-config/lux.h gcc/config/
+sed -i -e '/case "${host}" in/r ../../gcc-config/crossconfig.m4.add' libstdc++-v3/crossconfig.m4
+cd libstdc++-v3
+autoconf
+cd ..
+sed -i -e '/\*-\*-darwin\*)/r ../../gcc-config/config.host.add' libgcc/config.host
+sed -i -e '/case $machine in/r ../../gcc-config/mkfixinc.sh.add' fixincludes/mkfixinc.sh
+cd ../build
 ../gcc-14.2.0/configure --target="$TARGET" --prefix="$CROSS" --disable-nls --enable-languages=c,c++ --without-headers --with-gmp-include="$HOST/include" --with-gmp-lib="$HOST/lib"
 make all-gcc
 make all-target-libgcc
 make install-gcc
 make install-target-libgcc
 
+cd ../..
+
 echo "Cleaning up..."
 rm -rf downloads gmp mpfr mpc binutils gcc
+
+echo
+echo "gcc and binutils are now installed in $CROSS/bin"
