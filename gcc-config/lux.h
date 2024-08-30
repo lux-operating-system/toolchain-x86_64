@@ -25,3 +25,9 @@
 
 #define ENDFILE_SPEC                "crtend.o%s crtn.o%s"
 #define PREFERRED_DEBUGGING_TYPE    DWARF2_DEBUG
+
+#ifdef LINK_SPEC
+#undef LINK_SPEC
+#endif
+
+#define LINK_SPEC                   "-z max-page-size=4096"
