@@ -88,7 +88,7 @@ make install-target-libgcc
 cd ../..
 
 echo "Cleaning up..."
-#rm -rf downloads gmp mpfr mpc binutils gcc
+rm -rf downloads gmp mpfr mpc binutils gcc
 
 echo
 echo "gcc and binutils are now installed in $CROSS/bin"
