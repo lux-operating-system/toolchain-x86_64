@@ -11,7 +11,7 @@ mkdir -p downloads host cross gmp mpfr mpc binutils gcc
 mkdir -p gcc/build
 
 echo "Downloading gmp..."
-curl https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz -o downloads/gmp.tar.gz
+curl https://ftp.gnu.org/gnu/gmp/gmp-6.3.0.tar.xz -o downloads/gmp.tar.xz
 echo "Downloading mpfr..."
 curl https://ftp.gnu.org/gnu/mpfr/mpfr-4.2.1.tar.gz -o downloads/mpfr.tar.gz
 echo "Downloading mpc..."
@@ -22,7 +22,7 @@ echo "Downloading gcc..."
 curl https://ftp.gnu.org/gnu/gcc/gcc-14.2.0/gcc-14.2.0.tar.gz -o downloads/gcc.tar.gz
 
 echo "Extracting downloads..."
-tar -xvzf downloads/gmp.tar.gz -C gmp
+tar -xvJf downloads/gmp.tar.xz -C gmp
 tar -xvzf downloads/mpfr.tar.gz -C mpfr
 tar -xvzf downloads/mpc.tar.gz -C mpc
 tar -xvzf downloads/binutils.tar.gz -C binutils
